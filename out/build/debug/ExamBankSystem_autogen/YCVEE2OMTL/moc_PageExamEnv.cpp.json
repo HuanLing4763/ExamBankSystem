@@ -1,0 +1,26 @@
+{
+    "classes": [
+        {
+            "className": "PageExamEnv",
+            "lineNumber": 10,
+            "object": true,
+            "qualifiedClassName": "PageExamEnv",
+            "slots": [
+                {
+                    "access": "private",
+                    "index": 0,
+                    "name": "onSwitchButtonClicked",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QWidget"
+                }
+            ]
+        }
+    ],
+    "inputFile": "PageExamEnv.h",
+    "outputRevision": 68
+}

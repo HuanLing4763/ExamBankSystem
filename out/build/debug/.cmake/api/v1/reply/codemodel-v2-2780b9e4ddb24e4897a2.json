@@ -1,0 +1,195 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "ExamBankSystem",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem-Debug-14e499b14bff048debd8.json",
+					"name" : "ExamBankSystem",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem_autogen-Debug-3a43ce86fa28b1c756da.json",
+					"name" : "ExamBankSystem_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem_autogen_timestamp_deps-Debug-598e9b6d0863debdfd9e.json",
+					"name" : "ExamBankSystem_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem_copy_qml::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem_copy_qml-Debug-abd4c653893a04bb0277.json",
+					"name" : "ExamBankSystem_copy_qml",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem_copy_res::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem_copy_res-Debug-83c4b010d71be0793a08.json",
+					"name" : "ExamBankSystem_copy_res",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem_qmlimportscan::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem_qmlimportscan-Debug-19fe176261ce8e52efc6.json",
+					"name" : "ExamBankSystem_qmlimportscan",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem_qmllint-Debug-9fc3dddfaef395698283.json",
+					"name" : "ExamBankSystem_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem_qmllint_json-Debug-fd89b21a9c3ad87a256d.json",
+					"name" : "ExamBankSystem_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem_qmllint_module-Debug-dfa068a6ba9f5cfcbeac.json",
+					"name" : "ExamBankSystem_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ExamBankSystem_qmltyperegistration::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExamBankSystem_qmltyperegistration-Debug-f7f21b7fb23a06e23035.json",
+					"name" : "ExamBankSystem_qmltyperegistration",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_aotstats::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_aotstats-Debug-ab2a57dacc12694a98f9.json",
+					"name" : "all_aotstats",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint-Debug-2e680d4e221b48c03044.json",
+					"name" : "all_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_json-Debug-c4bda384b88801967c13.json",
+					"name" : "all_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_module-Debug-efc27d8dbb4276468d99.json",
+					"name" : "all_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmltyperegistrations::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmltyperegistrations-Debug-5201adeeb735ea2fc95c.json",
+					"name" : "all_qmltyperegistrations",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "module_ExamBankSystem_aotstats_target::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-module_ExamBankSystem_aotstats_target-Debug-96b6872307e835ad98af.json",
+					"name" : "module_ExamBankSystem_aotstats_target",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "E:/Project/CPP/ExamBankSystem/out/build/debug",
+		"source" : "E:/Project/CPP/ExamBankSystem"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

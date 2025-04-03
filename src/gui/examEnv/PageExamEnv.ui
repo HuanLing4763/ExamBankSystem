@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+	<class>ExamEnvPage</class>
+	<widget class="QWidget" name="ExamEnvPage">
+		<layout class="QVBoxLayout" name="verticalLayout">
+			<item>
+				<spacer name="topSpacer">
+					<property name="orientation">
+						<enum>Qt::Vertical</enum>
+					</property>
+					<property name="sizePolicy" stdset="0">
+						<sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+						</sizepolicy>
+					</property>
+				</spacer>
+			</item>
+			<item>
+				<widget class="QLabel" name="titleLabel">
+					<property name="styleSheet">
+						<string>font-size: 20px; color: #3498db;</string>
+					</property>
+					<property name="text">
+						<string>当前考试环境</string>
+					</property>
+					<property name="alignment">
+						<set>Qt::AlignCenter</set>
+					</property>
+				</widget>
+			</item>
+			<item>
+				<widget class="QWidget" name="currentEnvContainer">
+					<layout class="QVBoxLayout" name="currentEnvLayout">
+						<item>
+							<widget class="QLabel" name="currentEnvIconLabel">
+								<property name="minimumSize">
+									<size>
+										<width>120</width>
+										<height>180</height>
+									</size>
+								</property>
+								<property name="sizePolicy">
+									<sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+										<horstretch>0</horstretch>
+										<verstretch>0</verstretch>
+									</sizepolicy>
+								</property>
+								<property name="alignment">
+									<set>Qt::AlignCenter</set>
+								</property>
+							</widget>
+						</item>
+						<item>
+							<widget class="QLabel" name="currentEnvTextLabel">
+								<property name="minimumSize">
+									<size>
+										<width>120</width>
+										<height>60</height>
+									</size>
+								</property>
+								<property name="sizePolicy">
+									<sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+										<horstretch>0</horstretch>
+										<verstretch>0</verstretch>
+									</sizepolicy>
+								</property>
+								<property name="styleSheet">
+									<string>font-size: 18px; color: #34495e;</string>
+								</property>
+								<property name="alignment">
+									<set>Qt::AlignCenter</set>
+								</property>
+							</widget>
+						</item>
+					</layout>
+				</widget>
+			</item>
+			<item alignment="Qt::AlignHCenter">
+				<widget class="QPushButton" name="switchButton">
+					<property name="minimumSize">
+						<size>
+							<width>240</width>
+							<height>60</height>
+						</size>
+					</property>
+					<property name="styleSheet">
+						<string>
+							QPushButton {
+							background-color: #4a90e2;
+							color: white;
+							border: 1px solid #357abd;
+							border-radius: 4px;
+							padding: 8px 16px;
+							font-size: 18px;
+							qproperty-iconSize: 24px;
+							margin: 10px;
+							}
+							QPushButton:hover {
+							background-color: #6ca6e8;
+							border-color: #4a90e2;
+							}
+							QPushButton:pressed {
+							background-color: #357abd;
+							border-color: #2a5f8a;
+							}
+							QPushButton:focus {
+							outline: none;
+							border: 2px solid #a0c5f7;
+							}
+						</string>
+					</property>
+					<property name="text">
+						<string>切换</string>
+					</property>
+					<property name="sizePolicy">
+						<sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+							<horstretch>0</horstretch>
+							<verstretch>0</verstretch>
+						</sizepolicy>
+					</property>
+				</widget>
+			</item>
+			<item>
+				<spacer name="bottomSpacer">
+					<property name="orientation">
+						<enum>Qt::Vertical</enum>
+					</property>
+					<property name="sizePolicy" stdset="0">
+						<sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+						</sizepolicy>
+					</property>
+				</spacer>
+			</item>
+		</layout>
+	</widget>
+</ui>

@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/ExamBankSystem">
+    <file alias="qmldir">E:/Project/CPP/ExamBankSystem/out/build/debug/ExamBankSystem/qmldir</file>
+  </qresource>
+</RCC>
+
