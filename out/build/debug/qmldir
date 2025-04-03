@@ -1,0 +1,8 @@
+module ExamBankSystem
+linktarget ExamBankSystemplugin
+optional plugin ExamBankSystemplugin
+classname ExamBankSystemPlugin
+typeinfo ExamBankSystem.qmltypes
+prefer :/ExamBankSystem/
+Loading 1.0 qml/Loading.qml
+

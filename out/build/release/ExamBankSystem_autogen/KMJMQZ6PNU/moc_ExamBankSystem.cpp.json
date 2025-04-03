@@ -1,0 +1,26 @@
+{
+    "classes": [
+        {
+            "className": "ExamBankSystem",
+            "lineNumber": 15,
+            "object": true,
+            "qualifiedClassName": "ExamBankSystem",
+            "slots": [
+                {
+                    "access": "private",
+                    "index": 0,
+                    "name": "onButtonClicked",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QMainWindow"
+                }
+            ]
+        }
+    ],
+    "inputFile": "ExamBankSystem.h",
+    "outputRevision": 68
+}

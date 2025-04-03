@@ -1,0 +1,26 @@
+{
+    "classes": [
+        {
+            "className": "PageSpecial",
+            "lineNumber": 10,
+            "object": true,
+            "qualifiedClassName": "PageSpecial",
+            "slots": [
+                {
+                    "access": "private",
+                    "index": 0,
+                    "name": "onButtonClicked",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QWidget"
+                }
+            ]
+        }
+    ],
+    "inputFile": "PageSpecial.h",
+    "outputRevision": 68
+}

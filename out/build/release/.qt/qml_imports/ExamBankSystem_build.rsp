@@ -1,0 +1,15 @@
+-rootPath
+E:/Project/CPP/ExamBankSystem
+-cmake-output
+-output-file
+E:/Project/CPP/ExamBankSystem/out/build/release/.qt/qml_imports/ExamBankSystem_build.cmake
+-importPath
+E:/Project/CPP/ExamBankSystem/out/build/release/ExamBankSystem
+-importPath
+E:/Project/CPP/ExamBankSystem/out/build/release
+-importPath
+D:/Qt/6.8.2/msvc2022_64/qml
+-qrcFiles
+E:/Project/CPP/ExamBankSystem/out/build/release/.qt/rcc/qmake_ExamBankSystem.qrc
+E:/Project/CPP/ExamBankSystem/out/build/release/.qt/rcc/qmake_ExamBankSystem_copy.qrc
+E:/Project/CPP/ExamBankSystem/out/build/release/.qt/rcc/ExamBankSystem_raw_qml_0.qrc

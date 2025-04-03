@@ -1,0 +1,69 @@
+{
+    "classes": [
+        {
+            "className": "VirtualBoxController",
+            "lineNumber": 9,
+            "object": true,
+            "qualifiedClassName": "VirtualBoxController",
+            "signals": [
+                {
+                    "access": "public",
+                    "index": 0,
+                    "name": "vmStarted",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "error",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 1,
+                    "name": "vmStartFailed",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "vmName",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "launchType",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 2,
+                    "name": "startVMAsync",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "vmName",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 3,
+                    "isCloned": true,
+                    "name": "startVMAsync",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "VirtualBoxController.h",
+    "outputRevision": 68
+}

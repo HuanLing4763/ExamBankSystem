@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/ExamBankSystem">
+        <file>resources/loading.svg</file>
+        <file>resources/c++语言.png</file>
+        <file>resources/python.png</file>
+        <file>resources/close.png</file>
+        <file>resources/maximize.png</file>
+        <file>resources/minimize.png</file>
+        <file>resources/restore.png</file>
+        <file>resources/程序设计.png</file>
+        <file>resources/程序填空.png</file>
+        <file>resources/程序修改.png</file>
+        <file>resources/单项选择.png</file>
+        <file>resources/考试.png</file>
+        <file>resources/虚拟机.png</file>
+        <file>resources/专项练习.png</file>
+        <file>qml/Loading.qml</file>
+    </qresource>
+</RCC>
