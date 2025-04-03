@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file alias="/ExamBankSystem">E:/Project/CPP/ExamBankSystem/out/build/debug</file>
-
-  </qresource>
-</RCC>

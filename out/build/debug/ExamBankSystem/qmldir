@@ -1,5 +1,0 @@
-module ExamBankSystem
-typeinfo ExamBankSystem.qmltypes
-prefer :/
-Loading 1.0 qml/Loading.qml
-
