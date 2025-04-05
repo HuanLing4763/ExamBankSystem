@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/ExamBankSystem">
         <file>resources/loading.svg</file>
-        <file>resources/c++语言.png</file>
-        <file>resources/python.png</file>
+        <file>resources/C++.png</file>
+        <file>resources/Python.png</file>
         <file>resources/close.png</file>
         <file>resources/maximize.png</file>
         <file>resources/minimize.png</file>

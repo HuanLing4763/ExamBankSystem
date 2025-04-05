@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file alias="qml/Loading.qml">E:/Project/CPP/ExamBankSystem/qml/Loading.qml</file>
-  </qresource>
-</RCC>
-

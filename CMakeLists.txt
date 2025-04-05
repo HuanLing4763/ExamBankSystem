@@ -4,9 +4,17 @@ project(ExamBankSystem LANGUAGES CXX)
 set(VBOX_SDK_DIR ${CMAKE_SOURCE_DIR}/sdk) 
 
 include(qt.cmake)
+include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+FetchContent_Declare(
+    cpp-httplib
+    GIT_REPOSITORY https://gitcode.com/gh_mirrors/cp/cpp-httplib.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(cpp-httplib)
 
 if(WIN32)
     execute_process(COMMAND where VirtualBox
@@ -80,6 +88,8 @@ qt_add_resources(APP_RESOURCES ${RESOURCE_FILES})
 
 qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${APP_RESOURCES})
 
+configure_file(config.ini ${CMAKE_CURRENT_BINARY_DIR}/config.ini COPYONLY)
+
 qt_add_qml_module(${PROJECT_NAME}
     URI ExamBankSystem
     VERSION 1.0
@@ -114,6 +124,7 @@ target_link_libraries(${PROJECT_NAME}
         oleaut32
         rpcrt4 
         uuid
+        httplib  # 添加cpp-httplib库链接
 )
 
 if(WIN32)

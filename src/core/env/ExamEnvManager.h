@@ -20,7 +20,8 @@ class ExamEnvManager : public QObject
 public:
     static ExamEnvManager& getInstance();
 
-    QString currentEnv() const;  // 获取当前环境标识
+    QString currentEnv() const;  // 获取当前环境名称
+    int currentEnvID() const;  // 获取当前环境ID
     QString getSharedFolderPath() const;  // 获取共享文件夹绝对路径
     QList<QPair<QString, QIcon>> availableEnvs() const;  // 获取所有可用环境列表
     QPair<QString, QIcon> currentEnvPair() const;  // 获取当前环境的完整信息
@@ -38,7 +39,8 @@ private:
     void loadEnvironments();  // 加载所有可用环境信息
 
     QSettings m_settings;  // 配置存储对象
-    QString m_currentEnv;  // 当前环境标识
+    QString m_currentEnvName;  // 当前环境名称
+    int m_currentEnvID;  // 当前环境ID
     QString m_sharedFolderPath;  // 共享文件夹绝对路径
     QList<QPair<QString, QIcon>> m_environments;  // 可用环境列表
 };
