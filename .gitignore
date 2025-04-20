@@ -54,5 +54,7 @@ compile_commands.json
 *_qmlcache.qrc
 
 .vs/
-out/share/*
+out/
+share/*
+!share/.gitkeep
 !share/
