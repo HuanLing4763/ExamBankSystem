@@ -5,7 +5,6 @@
 #include <QIcon>
 #include <QPair>
 #include <QList>
-#include <algorithm>
 
 /**
  * @brief 考试环境管理器（单例模式）
@@ -20,27 +19,30 @@ class ExamEnvManager : public QObject
 public:
     static ExamEnvManager& getInstance();
 
+    struct EnvInfo {
+        QString name;
+        int id;
+        QIcon icon;
+    };
+
     QString currentEnv() const;  // 获取当前环境名称
     int currentEnvID() const;  // 获取当前环境ID
     QString getSharedFolderPath() const;  // 获取共享文件夹绝对路径
-    QList<QPair<QString, QIcon>> availableEnvs() const;  // 获取所有可用环境列表
-    QPair<QString, QIcon> currentEnvPair() const;  // 获取当前环境的完整信息
+    QList<EnvInfo> envList();  // 获取所有可用环境列表
+    EnvInfo currentEnvInfo() const;  // 获取当前环境的完整信息
+    QList<QPair<QString, QIcon>> getQuestionTypes();  // 获取题型数据集合
+    void clearSettings();  // 清除配置
 
 public slots:
-    // @brief 切换考试环境（自动持久化存储）
-    void setCurrentEnv(const QString& env);
-
-signals:
-    // @brief 环境信息发生变化
-    void envDetailChanged(const QPair<QString, QIcon>& env);
+    // @brief 切换考试环境
+    void setCurrentEnv(const EnvInfo& env);
 
 private:
     explicit ExamEnvManager(QObject* parent = nullptr);
-    void loadEnvironments();  // 加载所有可用环境信息
 
     QSettings m_settings;  // 配置存储对象
-    QString m_currentEnvName;  // 当前环境名称
-    int m_currentEnvID;  // 当前环境ID
+    EnvInfo m_currentEnv;  // 当前环境
     QString m_sharedFolderPath;  // 共享文件夹绝对路径
-    QList<QPair<QString, QIcon>> m_environments;  // 可用环境列表
+    QList<EnvInfo> m_environments;  // 可用环境列表
+    QList<QPair<QString, QIcon>> questionTypes;  // 题型数据集合
 };

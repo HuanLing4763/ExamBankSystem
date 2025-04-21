@@ -17,10 +17,6 @@ public:
 
 private:
 	Ui::SpecialTrainingPage ui;
-	QList<QPair<QString, QIcon>> questionTypes;  // 题型数据集合（类型名称+图标）
-
-	// @brief 获取题型配置数据（当前为临时实现）
-	QList<QPair<QString, QIcon>> getQuestionTypes();
 
 private slots:
 	// @brief 处理题型选择按钮点击事件

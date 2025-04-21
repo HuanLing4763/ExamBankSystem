@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+	<class>EnvSelectDialog</class>
+	<widget class="QDialog" name="EnvSelectDialog">
+		<property name="windowTitle">
+			<string>选择考试环境</string>
+		</property>
+		<property name="windowFlags">
+			<set>Qt::Dialog|Qt::CustomizeWindowHint</set>
+		</property>
+		<property name="styleSheet">
+			<string notr="true">
+				QDialog {
+				background: #ffffff;
+				border-radius: 8px;
+				border: 1px solid #dee2e6;
+				}
+				QLabel#titleLabel {
+				font-size: 20px;
+				color: #34495e;
+				padding: 5px;
+				border-bottom: 1px solid #ecf0f1;
+				}
+				QListWidget {
+				border: none;
+				font-size: 16px;
+				padding: 0 20px;
+				}
+				QListWidget::item {
+				padding: 4px;
+				border-radius: 4px;
+				margin: 8px 0;
+				}
+				QListWidget::item:hover {
+				background: #f8f9fa;
+				}
+				QListWidget::item:selected {
+				background: #4a90e2;
+				color: white;
+				}
+				QPushButton {
+				background-color: #4a90e2;
+				color: white;
+				border: none;
+				padding: 10px 0;
+				border-radius: 4px;
+				font-size: 16px;
+				}
+				QPushButton:hover {
+				background-color: #357ab7;
+				}
+			</string>
+		</property>
+		<layout class="QVBoxLayout" name="mainLayout">
+			<property name="spacing">
+				<number>0</number>
+			</property>
+			<item>
+				<widget class="QLabel" name="titleLabel">
+					<property name="text">
+						<string>当前考试环境</string>
+					</property>
+					<property name="alignment">
+						<set>Qt::AlignCenter</set>
+					</property>
+				</widget>
+			</item>
+			<item>
+				<widget class="QListWidget" name="listEnv">
+					<property name="verticalScrollBarPolicy">
+						<enum>Qt::ScrollBarAlwaysOff</enum>
+					</property>
+					<property name="horizontalScrollBarPolicy">
+						<enum>Qt::ScrollBarAlwaysOff</enum>
+					</property>
+				</widget>
+			</item>
+			<item>
+				<widget class="QPushButton" name="confirmButton">
+					<property name="text">
+						<string>确认</string>
+					</property>
+				</widget>
+			</item>
+		</layout>
+	</widget>
+</ui>

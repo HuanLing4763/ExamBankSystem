@@ -9,13 +9,6 @@ include(FetchContent)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-FetchContent_Declare(
-    cpp-httplib
-    GIT_REPOSITORY https://gitcode.com/gh_mirrors/cp/cpp-httplib.git
-    GIT_TAG master
-)
-FetchContent_MakeAvailable(cpp-httplib)
-
 if(WIN32)
     execute_process(COMMAND where VirtualBox
         OUTPUT_VARIABLE VBOX_EXECUTABLE
@@ -74,6 +67,9 @@ set(PROJECT_SOURCES
     src/gui/examEnv/PageExamEnv.cpp
     src/gui/examEnv/PageExamEnv.h
     src/gui/examEnv/PageExamEnv.ui
+    src/gui/examEnv/EnvSelectDialog.cpp
+    src/gui/examEnv/EnvSelectDialog.h
+    src/gui/examEnv/EnvSelectDialog.ui
     src/gui/special/PageSpecial.cpp
     src/gui/special/PageSpecial.h
     src/gui/special/PageSpecial.ui
@@ -124,7 +120,6 @@ target_link_libraries(${PROJECT_NAME}
         oleaut32
         rpcrt4 
         uuid
-        httplib  # 添加cpp-httplib库链接
 )
 
 if(WIN32)

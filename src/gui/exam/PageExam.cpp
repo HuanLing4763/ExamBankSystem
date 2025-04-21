@@ -1,19 +1,14 @@
-#include <QProcess>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QFile>
 #include <QDir>
 #include <QMessageBox>
 #include <QLabel>
-#include <QGuiApplication>
-#include <QScreen>
-#include <QMovie>
-#include <QQuickView>
 #include <QQuickWidget>
 #include "PageExam.h"
 #include "env/ExamEnvManager.h"
 #include "virtualbox/LoadingManager.h"
-
+#include "virtualbox/VirtualBoxController.h"
 
 PageExam::PageExam(QWidget* parent) : QWidget(parent)
 {
@@ -57,7 +52,6 @@ void PageExam::onBtnExamClicked() {
     // 异步启动虚拟机
     vboxController->startVMAsync(vmName, "gui");
 }
-
 
 QJsonArray PageExam::getAppParams()
 {

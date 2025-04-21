@@ -1,39 +1,50 @@
 #include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QBuffer>
+#include <QQuickWidget>
+#include <QQuickItem>
+#include <QQmlContext>
 #include "PageExamEnv.h"
-#include "env/ExamEnvManager.h"
+#include "EnvSelectDialog.h"
 
 PageExamEnv::PageExamEnv(QWidget* parent) : QWidget(parent)
 {
     ui.setupUi(this);
 
     connect(ui.switchButton, &QPushButton::clicked, this, &PageExamEnv::onSwitchButtonClicked);
-    connect(&ExamEnvManager::getInstance(), &ExamEnvManager::envDetailChanged,
-        this, [this](const auto& pair) {
-            updateCurrentEnvLabel(pair);  // 环境变化时自动更新显示
-        });
 
     // 初始化当前环境
-    auto pair = ExamEnvManager::getInstance().currentEnvPair();
-    updateCurrentEnvLabel(pair);
+    updateCurrentEnvLabel();
 }
 
 PageExamEnv::~PageExamEnv()
 {}
 
-void PageExamEnv::updateCurrentEnvLabel(const QPair<QString, QIcon>& pair)
+void PageExamEnv::updateCurrentEnvLabel()
 {
-    QPixmap pixmap = pair.second.pixmap(QSize(120, 120));
-    ui.currentEnvIconLabel->setPixmap(pixmap);
-    ui.currentEnvTextLabel->setText(pair.first);
+    const auto& env = ExamEnvManager::getInstance().currentEnvInfo();
+    ui.currentEnvIconLabel->setPixmap(env.icon.pixmap(120, 120));
+    ui.currentEnvTextLabel->setText(env.name);
+}
+
+void PageExamEnv::onEnvSelected(int envId)
+{
+    auto& envManager = ExamEnvManager::getInstance();
+    auto it = std::find_if(envManager.envList().begin(), envManager.envList().end(),
+        [envId](const auto& env) { return env.id == envId; });
+
+    if (it != envManager.envList().end()) {
+        envManager.setCurrentEnv(*it);
+        updateCurrentEnvLabel();
+    }
 }
 
 void PageExamEnv::onSwitchButtonClicked()
 {
-    // TODO: 实现环境切换功能
-    // 预期行为：
-    // 1. 弹出环境选择菜单
-    // 2. 调用ExamEnvManager切换环境
-    // 3. 通过信号通知其他组件更新
+    EnvSelectDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        ExamEnvManager::getInstance().setCurrentEnv(dialog.selectedEnv());
+        updateCurrentEnvLabel();
+    }
 }

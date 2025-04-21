@@ -57,4 +57,3 @@ compile_commands.json
 out/
 share/*
 !share/.gitkeep
-!share/

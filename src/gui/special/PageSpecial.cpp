@@ -3,16 +3,17 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <httplib.h>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include "PageSpecial.h"
-#include <env/ExamEnvManager.h>
+#include "env/ExamEnvManager.h"
 
 PageSpecial::PageSpecial(QWidget* parent) : QWidget(parent)
 {
     ui.setupUi(this);
 
     // 初始化题型数据
-    questionTypes = getQuestionTypes();
+    auto questionTypes = ExamEnvManager::getInstance().getQuestionTypes();
 
     /* 网格布局配置：
      * - 列间距为0，边距清零
@@ -80,49 +81,6 @@ PageSpecial::PageSpecial(QWidget* parent) : QWidget(parent)
 
 PageSpecial::~PageSpecial()
 {}
-
-QList<QPair<QString, QIcon>> PageSpecial::getQuestionTypes()
-{
-    // 暂时用本地图标
-    QList<QIcon> icons;
-    icons.append(QIcon(":/ExamBankSystem/resources/单项选择"));
-    icons.append(QIcon(":/ExamBankSystem/resources/程序填空"));
-    icons.append(QIcon(":/ExamBankSystem/resources/程序修改"));
-    icons.append(QIcon(":/ExamBankSystem/resources/程序设计"));
-
-    // 获取考试类型
-    QString examType = ExamEnvManager::getInstance().currentEnv();
-
-    // 向服务器请求题型数据
-    QSettings settings("config.ini", QSettings::IniFormat, this);
-    QString host = settings.value("Server/Host").toString();
-    int port = settings.value("Server/Port").toInt();
-
-    httplib::Client cli(host.toStdString(), port);
-    QString url = "/questions/types?exam_type=" + examType;
-    auto res = cli.Get(url.toStdString());
-    if (res && res->status == 200) {
-        auto body = res->body;
-        QList<QPair<QString, QIcon>> questionTypes;
-        QJsonDocument doc = QJsonDocument::fromJson(body.c_str());
-        QJsonArray array = doc.array();
-        int i = 0;   // 题型索引
-        for (const auto& obj : array) {
-            QJsonObject obj_ = obj.toObject();
-            int subject_id = obj_.value("subject_id").toInt();
-            QString type = obj_.value("question_type").toString();
-            if (subject_id == 1) continue;
-            // TODO: 动态获取题型图标（等待后端接口）
-            questionTypes.append(QPair<QString, QIcon>(type, icons[i++]));
-        }
-        return questionTypes;
-    } else {
-        qDebug() << "Failed to get question types.";
-        qDebug() << "Error code:" << res->status;
-        qDebug() << "Error message:" << res->body;
-        return QList<QPair<QString, QIcon>>();
-    }
-}
 
 void PageSpecial::onButtonClicked()
 {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QWidget>
+#include "env/ExamEnvManager.h"
 #include "ui_PageExamEnv.h"
 
 /**
@@ -16,13 +17,13 @@ public:
 
 private:
     Ui::ExamEnvPage ui;
-
     // @brief 更新当前环境显示标签
-    // @param[in] pair 环境配置数据（名称+图标）
-    void updateCurrentEnvLabel(const QPair<QString, QIcon>& pair);
-
-private slots:
+    void updateCurrentEnvLabel();
     // @brief 切换考试环境
     void onSwitchButtonClicked();
+
+private slots:
+    // @brief 切换考试环境信号
+    void onEnvSelected(int envId);
 };
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QWidget>
-#include "virtualbox/VirtualBoxController.h"
 #include "ui_PageExam.h"
 
 /**
