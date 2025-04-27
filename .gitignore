@@ -56,4 +56,6 @@ compile_commands.json
 .vs/
 out/
 share/*
+image/*
 !share/.gitkeep
+!image/.gitkeep
