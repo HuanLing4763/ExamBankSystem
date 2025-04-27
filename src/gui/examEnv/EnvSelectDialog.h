@@ -14,9 +14,6 @@ public:
 
 	ExamEnvManager::EnvInfo selectedEnv() const { return m_selectedEnv; }
 
-private slots:
-	void onItemClicked(QListWidgetItem* item);
-
 private:
 	Ui::EnvSelectDialog ui;
 	ExamEnvManager::EnvInfo m_selectedEnv;

@@ -2,12 +2,16 @@
 #include <QDebug>
 #include <QtConcurrent/QtConcurrent>
 #include <atlsafe.h>
+#include <QNetworkReply>
+#include <QNetworkDiskCache>
 
+const QString VIRTUALBOX_IMAGES_DIR = "E:/Project/CPP/ExamBankSystem/images/";
 
 VirtualBoxController* VirtualBoxController::instance = nullptr;
 std::mutex VirtualBoxController::mtx;
 
-VirtualBoxController* VirtualBoxController::getInstance() {
+VirtualBoxController* VirtualBoxController::getInstance()
+{
     std::lock_guard<std::mutex> lock(mtx);
     if (!instance) {
         instance = new VirtualBoxController();
@@ -32,13 +36,12 @@ bool VirtualBoxController::initializeCOM(QString& error)
     HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     if (hr == S_FALSE)
     {
-        // 当前线程已经初始化过COM库，直接使用
-        qDebug() << "当前线程已初始化过COM库，直接使用。";
+        qDebug() << "当前线程已初始化过 COM 库，直接使用。";
         m_comInitialized = true;
     }
     else if (hr != S_OK)
     {
-        error = QString("COM初始化失败: 0x%1").arg(hr, 8, 16, QLatin1Char('0'));
+        error = QString("COM 初始化失败: 0x%1").arg(hr, 8, 16, QLatin1Char('0'));
         qDebug() << error;
         return false;
     }
@@ -73,7 +76,7 @@ bool VirtualBoxController::initializeCOM(QString& error)
         return false;
     }
 
-    qDebug() << "COM初始化成功。";
+    qDebug() << "COM 初始化成功。";
     return true;
 }
 
@@ -83,16 +86,97 @@ void VirtualBoxController::uninitializeCOM()
     {
         CoUninitialize();
         m_comInitialized = false;
-        qDebug() << "COM库已释放。";
+        qDebug() << "COM 库已释放。";
     }
 }
 
-bool VirtualBoxController::startVM(const QString& vmName, const QString& launchType) {
+HRESULT VirtualBoxController::createVM(const QString& ovaFilePath)
+{
+    QString error;
+    if (!initializeCOM(error)) {
+        emit importFinished(false);
+        return E_FAIL;
+    }
+
+    CComPtr<IAppliance> appliance;
+    HRESULT hr = m_pVirtualBox->CreateAppliance(&appliance);
+    if (FAILED(hr)) {
+        emit importFinished(false);
+        return hr;
+    }
+
+    CComBSTR bstrFilePath(ovaFilePath.toStdWString().c_str());
+    CComPtr<IProgress> readProgress;
+    hr = appliance->Read(bstrFilePath, &readProgress);
+    if (FAILED(hr)) {
+        emit importFinished(false);
+        return hr;
+    }
+
+    // 等待读取完成
+    BOOL fReadCompleted = FALSE;
+    while (!fReadCompleted) {
+        hr = readProgress->get_Completed(&fReadCompleted);
+        if (FAILED(hr)) {
+            emit importFinished(false);
+            return hr;
+        }
+        Sleep(100);
+    }
+
+    hr = appliance->Interpret();
+    if (FAILED(hr)) {
+        emit importFinished(false);
+        return hr;
+    }
+
+    if (hr == VBOX_E_NOT_SUPPORTED) {
+        qDebug() << "当前版本暂不支持 OVA 格式（TAR 打包），请使用解压后的 OVF 文件";
+        emit importFinished(false);
+        return hr;
+    }
+
+    // 创建空的 SAFEARRAY 作为 ImportMachines 的 aOptions 参数
+    SAFEARRAY* aOptions = SafeArrayCreateVector(VT_VARIANT, 0, 0);
+    if (!aOptions) {
+        qDebug() << "创建 SAFEARRAY 失败";
+        emit importFinished(false);
+        return E_OUTOFMEMORY;
+    }
+
+    CComPtr<IProgress> importProgress;
+    hr = appliance->ImportMachines(aOptions, &importProgress);
+    // 释放 SAFEARRAY
+    SafeArrayDestroy(aOptions);
+
+    if (FAILED(hr)) {
+        emit importFinished(false);
+        return hr;
+    }
+
+    BOOL fImportCompleted = FALSE;
+    while (!fImportCompleted) {
+        hr = importProgress->get_Completed(&fImportCompleted);
+        if (FAILED(hr)) {
+            emit importFinished(false);
+            return hr;
+        }
+        if (fImportCompleted) {
+            emit vmImportProgress(100);
+            emit importFinished(true);
+        }
+        Sleep(100);
+    }
+
+    return hr;
+}
+
+bool VirtualBoxController::startVM(const QString& vmName, const QString& launchType)
+{
     QString error;
     HRESULT hr;
     CComPtr<IMachine> pMachine;
 
-    // 转换虚拟机名称并输出调试信息
     std::wstring wstrVmName = vmName.toStdWString();
     CComBSTR bstrVmName(wstrVmName.c_str());
     qDebug() << "正在查找虚拟机: " << vmName << " (BSTR: " << QString::fromWCharArray(bstrVmName) << ")";
@@ -105,7 +189,6 @@ bool VirtualBoxController::startVM(const QString& vmName, const QString& launchT
         return false;
     }
 
-    // 创建新会话
     CComPtr<ISession> pSession;
     hr = m_pClient->get_Session(&pSession);
     if (FAILED(hr)) {
@@ -115,9 +198,8 @@ bool VirtualBoxController::startVM(const QString& vmName, const QString& launchT
         return false;
     }
 
-    CComSafeArray<BSTR> environment; // 创建空环境变量数组
+    CComSafeArray<BSTR> environment;
 
-    // 启动虚拟机进程
     CComPtr<IProgress> pProgress;
     hr = pMachine->LaunchVMProcess(
         pSession,
@@ -133,7 +215,6 @@ bool VirtualBoxController::startVM(const QString& vmName, const QString& launchT
         return false;
     }
 
-    // 等待启动完成
     hr = pProgress->WaitForCompletion(-1);
     if (FAILED(hr)) {
         QString error = "启动过程失败: " + getCOMError(hr);
@@ -142,7 +223,6 @@ bool VirtualBoxController::startVM(const QString& vmName, const QString& launchT
         return false;
     }
 
-    // 获取控制台对象
     CComPtr<IConsole> pConsole;
     hr = pSession->get_Console(&pConsole);
     if (FAILED(hr)) {
@@ -152,11 +232,9 @@ bool VirtualBoxController::startVM(const QString& vmName, const QString& launchT
         return false;
     }
 
-    // 转移引用到成员变量
     m_pConsole = pConsole;
     m_pSession = pSession;
 
-    // 设置分辨率为1920x1080
     if (!setResolution(0, 1920, 1080)) {
         qDebug() << "设置分辨率失败，继续启动流程";
     }
@@ -165,28 +243,25 @@ bool VirtualBoxController::startVM(const QString& vmName, const QString& launchT
     return true;
 }
 
-void VirtualBoxController::startVMAsync(const QString& vmName, const QString& launchType) {
+void VirtualBoxController::startVMAsync(const QString& vmName, const QString& launchType)
+{
     QtConcurrent::run([this, vmName, launchType]() {
         QString error;
 
-        // 子线程初始化 COM 库
         HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
         if (FAILED(hr)) {
             emit vmStartFailed("子线程 COM 初始化失败");
             return;
         }
 
-        // 初始化当前实例的 COM 对象
         if (!initializeCOM(error)) {
             emit vmStartFailed("COM 对象初始化失败: " + error);
             CoUninitialize();
             return;
         }
 
-        // 执行同步启动
         startVM(vmName, launchType);
 
-        // 释放资源
         CoUninitialize();
         });
 }
@@ -205,15 +280,14 @@ bool VirtualBoxController::setResolution(quint32 screenId, quint32 width, quint3
         return false;
     }
 
-    // 设置分辨率
     hr = pDisplay->SetVideoModeHint(
-        screenId,          // 屏幕ID
-        VARIANT_TRUE,      // 启用屏幕
-        VARIANT_FALSE,     // 不改变原点
-        0, 0,              // 原点坐标
-        width, height,     // 目标分辨率
-        32,                // 位深
-        VARIANT_TRUE       // 通知Guest
+        screenId,
+        VARIANT_TRUE,
+        VARIANT_FALSE,
+        0, 0,
+        width, height,
+        32,
+        VARIANT_TRUE
     );
 
     if (hr != S_OK) {
@@ -227,7 +301,7 @@ bool VirtualBoxController::setResolution(quint32 screenId, quint32 width, quint3
 bool VirtualBoxController::installGuestAdditions()
 {
     if (!m_pConsole) {
-        QString error = "控制台对象未初始化，无法安装Guest Additions";
+        QString error = "控制台对象未初始化，无法安装 Guest Additions";
         qDebug() << error;
         emit vmStartFailed(error);
         return false;
@@ -237,7 +311,7 @@ bool VirtualBoxController::installGuestAdditions()
     HRESULT hr = m_pConsole->get_Guest(&pGuest);
     if (hr != S_OK)
     {
-        QString error = "获取Guest接口失败: " + getCOMError(hr);
+        QString error = "获取 Guest 接口失败: " + getCOMError(hr);
         qDebug() << error;
         emit vmStartFailed(error);
         return false;
@@ -248,7 +322,7 @@ bool VirtualBoxController::installGuestAdditions()
     hr = pGuest->UpdateGuestAdditions(source, nullptr, nullptr, &pProgress);
     if (hr != S_OK)
     {
-        QString error = "安装Guest Additions失败: " + getCOMError(hr);
+        QString error = "安装 Guest Additions 失败: " + getCOMError(hr);
         qDebug() << error;
         emit vmStartFailed(error);
         return false;
@@ -270,4 +344,33 @@ QString VirtualBoxController::getCOMError(HRESULT hr) const
 {
     _com_error err(hr);
     return QString::fromWCharArray(err.ErrorMessage());
+}
+
+bool VirtualBoxController::isVMExists(const QString& vmName)
+{
+    QString error;
+    if (!initializeCOM(error)) {
+        qDebug() << "COM 初始化失败，无法检查虚拟机是否存在: " << error;
+        return false;
+    }
+
+    std::wstring wstrVmName = vmName.toStdWString();
+    CComBSTR bstrVmName(wstrVmName.c_str());
+    CComPtr<IMachine> pMachine;
+    HRESULT hr = m_pVirtualBox->FindMachine(bstrVmName, &pMachine);
+    if (SUCCEEDED(hr)) {
+        return true;
+    }
+    else if (hr == VBOX_E_OBJECT_NOT_FOUND) {
+        return false;
+    }
+    else {
+        qDebug() << "查找虚拟机时发生错误: " << getCOMError(hr);
+        return false;
+    }
+}
+
+bool VirtualBoxController::downloadVMImage(const QString& imageName)
+{
+//TODO;实现虚拟机镜像下载
 }

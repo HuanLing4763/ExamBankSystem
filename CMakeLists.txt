@@ -70,6 +70,8 @@ set(PROJECT_SOURCES
     src/gui/examEnv/EnvSelectDialog.cpp
     src/gui/examEnv/EnvSelectDialog.h
     src/gui/examEnv/EnvSelectDialog.ui
+    src/gui/examEnv/DownloadProgressDialog.cpp
+    src/gui/examEnv/DownloadProgressDialog.h
     src/gui/special/PageSpecial.cpp
     src/gui/special/PageSpecial.h
     src/gui/special/PageSpecial.ui
@@ -84,6 +86,7 @@ qt_add_resources(APP_RESOURCES ${RESOURCE_FILES})
 
 qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${APP_RESOURCES})
 
+file(COPY share DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 configure_file(config.ini ${CMAKE_CURRENT_BINARY_DIR}/config.ini COPYONLY)
 
 qt_add_qml_module(${PROJECT_NAME}

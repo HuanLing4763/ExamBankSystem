@@ -23,6 +23,7 @@ public:
         QString name;
         int id;
         QIcon icon;
+        QString vmName;
     };
 
     QString currentEnv() const;  // 获取当前环境名称

@@ -2,71 +2,65 @@
 <ui version="4.0">
 	<class>EnvSelectDialog</class>
 	<widget class="QDialog" name="EnvSelectDialog">
+		<property name="geometry">
+			<rect>
+				<x>0</x>
+				<y>0</y>
+				<width>640</width>
+				<height>480</height>
+			</rect>
+		</property>
 		<property name="windowTitle">
 			<string>选择考试环境</string>
-		</property>
-		<property name="windowFlags">
-			<set>Qt::Dialog|Qt::CustomizeWindowHint</set>
 		</property>
 		<property name="styleSheet">
 			<string notr="true">
 				QDialog {
-				background: #ffffff;
-				border-radius: 8px;
-				border: 1px solid #dee2e6;
+				background: #f8f9fa;
 				}
 				QLabel#titleLabel {
-				font-size: 20px;
-				color: #34495e;
-				padding: 5px;
-				border-bottom: 1px solid #ecf0f1;
+				font: 500 20px 'Microsoft YaHei';
+				color: #2c3e50;
 				}
 				QListWidget {
-				border: none;
-				font-size: 16px;
-				padding: 0 20px;
+				font: 16px 'Microsoft YaHei';
 				}
 				QListWidget::item {
-				padding: 4px;
-				border-radius: 4px;
-				margin: 8px 0;
+				background: white;
 				}
 				QListWidget::item:hover {
 				background: #f8f9fa;
 				}
 				QListWidget::item:selected {
+				background: #e3f2fd;
+				}
+				QPushButton {
+				font: 14px 'Microsoft YaHei';
 				background: #4a90e2;
 				color: white;
 				}
-				QPushButton {
-				background-color: #4a90e2;
-				color: white;
-				border: none;
-				padding: 10px 0;
-				border-radius: 4px;
-				font-size: 16px;
-				}
 				QPushButton:hover {
-				background-color: #357ab7;
+				background: #357ab7;
+				}
+				QPushButton:disabled {
+				background: #bdc3c7;
+				color: #7f8c8d;
 				}
 			</string>
 		</property>
 		<layout class="QVBoxLayout" name="mainLayout">
-			<property name="spacing">
-				<number>0</number>
-			</property>
 			<item>
 				<widget class="QLabel" name="titleLabel">
 					<property name="text">
 						<string>当前考试环境</string>
 					</property>
-					<property name="alignment">
-						<set>Qt::AlignCenter</set>
-					</property>
 				</widget>
 			</item>
 			<item>
 				<widget class="QListWidget" name="listEnv">
+					<property name="selectionMode">
+						<enum>QAbstractItemView::NoSelection</enum>
+					</property>
 					<property name="verticalScrollBarPolicy">
 						<enum>Qt::ScrollBarAlwaysOff</enum>
 					</property>
@@ -75,13 +69,8 @@
 					</property>
 				</widget>
 			</item>
-			<item>
-				<widget class="QPushButton" name="confirmButton">
-					<property name="text">
-						<string>确认</string>
-					</property>
-				</widget>
-			</item>
 		</layout>
 	</widget>
+	<resources/>
+	<connections/>
 </ui>
