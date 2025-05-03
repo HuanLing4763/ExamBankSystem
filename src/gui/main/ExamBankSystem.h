@@ -1,13 +1,13 @@
 #pragma once
 
-#include <QtWidgets/QMainWindow>
-#include <QtCore/QPropertyAnimation>
-#include <QSystemTrayIcon>
-#include <QMenu>
-#include "ui_ExamBankSystem.h"
-#include "special/PageSpecial.h"
 #include "exam/PageExam.h"
 #include "examEnv/PageExamEnv.h"
+#include "special/PageSpecial.h"
+#include "ui_ExamBankSystem.h"
+#include <QMenu>
+#include <QSystemTrayIcon>
+#include <QtCore/QPropertyAnimation>
+#include <QtWidgets/QMainWindow>
 
 /**
  * @brief 题库管理系统主窗口，负责页面导航和窗口控制

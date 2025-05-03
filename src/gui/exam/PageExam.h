@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QWidget>
 #include "ui_PageExam.h"
+#include <QWidget>
 
 /**
  * @brief 模拟考试页面，负责虚拟考试环境启动控制

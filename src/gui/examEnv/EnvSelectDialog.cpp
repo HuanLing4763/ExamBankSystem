@@ -1,10 +1,12 @@
-#include <QListWidgetItem>
-#include <QPushButton>
+#include "DownloadProgressDialog.h"
+#include "EnvSelectDialog.h"
+#include "virtualbox/VirtualBoxController.h"
+#include <QDir>
 #include <QHBoxLayout>
 #include <QLabel>
-#include "EnvSelectDialog.h"
-#include "DownloadProgressDialog.h"
-#include "virtualbox/VirtualBoxController.h"
+#include <QListWidgetItem>
+#include <QPointer>
+#include <QPushButton>
 
 #define VIRTUALBOX_IMAGES_DIR "E:/Project/CPP/ExamBankSystem/images"
 
@@ -50,31 +52,39 @@ EnvSelectDialog::EnvSelectDialog(QWidget* parent)
                 DownloadProgressDialog* progressDlg = new DownloadProgressDialog(this);
                 VirtualBoxController* controller = VirtualBoxController::getInstance();
 
+                // 连接下载信号
                 connect(controller, &VirtualBoxController::downloadProgress,
                     progressDlg, &DownloadProgressDialog::updateDownloadProgress);
                 connect(controller, &VirtualBoxController::downloadFinished,
-                    [progressDlg, actionButton, env, controller](bool success) {
+                    [progressDlg, actionButton, env, controller](bool success, const QString& fileName) {
+                        QPointer<DownloadProgressDialog> safeDlg(progressDlg);
+                        if (!safeDlg) return;
+
+                        safeDlg->finishDownload(success);
                         if (success) {
-                            progressDlg->startImport(env.vmName);
-                            QString ovaFilePath = QString("%1/%2.ova").arg(VIRTUALBOX_IMAGES_DIR).arg(env.vmName);
+                            safeDlg->startImport(env.vmName);
+                            QString ovaPath = QDir(VIRTUALBOX_IMAGES_DIR).filePath(fileName);
+
+                            // 连接导入信号
                             connect(controller, &VirtualBoxController::vmImportProgress,
-                                progressDlg, &DownloadProgressDialog::updateImportProgress);
+                                safeDlg, &DownloadProgressDialog::updateImportProgress);
                             connect(controller, &VirtualBoxController::importFinished,
-                                [progressDlg, actionButton, env](bool importSuccess) {
-                                    if (importSuccess && VirtualBoxController::getInstance()->isVMExists(env.vmName)) {
-                                        actionButton->setText("确认");
-                                    }
-                                    else {
-                                        // 导入失败，更新按钮状态和文本
-                                        actionButton->setEnabled(true);
-                                        actionButton->setText("下载");
-                                    }
-                                    progressDlg->finishImport(importSuccess);
+                                [safeDlg, actionButton](bool importSuccess) {
+                                    QPointer<DownloadProgressDialog> safeDlgPtr(safeDlg);
+                                    QPointer<QPushButton> safeButton = actionButton;
+                                    QMetaObject::invokeMethod(qApp, [=]() {
+                                        if (safeDlgPtr) {
+                                            safeDlgPtr->finishImport(importSuccess);
+                                        }
+                                        if (safeButton) {
+                                            safeButton->setText(importSuccess ? "确认" : "下载");
+                                            safeButton->setEnabled(true);
+                                        }
+                                        });
                                 });
-                            controller->createVM(ovaFilePath);
+                            controller->createVM(ovaPath);
                         }
                         else {
-                            progressDlg->finishDownload(false);
                             actionButton->setEnabled(true);
                             actionButton->setText("下载");
                         }

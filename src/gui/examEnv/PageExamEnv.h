@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QWidget>
 #include "env/ExamEnvManager.h"
 #include "ui_PageExamEnv.h"
+#include <QWidget>
 
 /**
  * @brief 考试环境管理页面，负责当前考试环境的展示与切换

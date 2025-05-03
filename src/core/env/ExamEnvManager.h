@@ -1,10 +1,10 @@
 #pragma once
 
-#include <QObject>
-#include <QSettings>
 #include <QIcon>
-#include <QPair>
 #include <QList>
+#include <QObject>
+#include <QPair>
+#include <QSettings>
 
 /**
  * @brief 考试环境管理器（单例模式）

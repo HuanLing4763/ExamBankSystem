@@ -1,18 +1,18 @@
-#include "ExamBankSystem.h"
 #include "env/ExamEnvManager.h"
+#include "ExamBankSystem.h"
 #include "virtualbox/VirtualBoxController.h"
-#include <QFileSystemWatcher>
+#include <QApplication>
 #include <QDir>
 #include <QFile>
-#include <QPushButton>
-#include <QMouseEvent>
-#include <QScreen>
-#include <QPoint>
-#include <QRect>
+#include <QFileSystemWatcher>
 #include <QIcon>
-#include <QWidget>
-#include <QApplication>
+#include <QMouseEvent>
+#include <QPoint>
+#include <QPushButton>
+#include <QRect>
+#include <QScreen>
 #include <QStyle>
+#include <QWidget>
 
 ExamBankSystem::ExamBankSystem(QWidget* parent) : QMainWindow(parent), isDraggingTitleBar(false)
 {

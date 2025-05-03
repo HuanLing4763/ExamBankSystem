@@ -1,7 +1,7 @@
 #include "LoadingManager.h"
 #include <QGuiApplication>
-#include <QVBoxLayout>
 #include <QQuickItem>
+#include <QVBoxLayout>
 
 LoadingManager* LoadingManager::instance = nullptr;
 

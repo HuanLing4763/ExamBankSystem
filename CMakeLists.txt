@@ -8,6 +8,7 @@ include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON) 
 
 if(WIN32)
     execute_process(COMMAND where VirtualBox
@@ -57,6 +58,8 @@ set(PROJECT_SOURCES
     src/gui/main/ExamBankSystem.ui
     src/core/env/ExamEnvManager.cpp
     src/core/env/ExamEnvManager.h
+    src/core/network/NetworkManager.cpp
+    src/core/network/NetworkManager.h
     src/core/virtualbox/VirtualBoxController.cpp
     src/core/virtualbox/VirtualBoxController.h
     src/core/virtualbox/LoadingManager.cpp

@@ -1,8 +1,8 @@
 #pragma once
-#include <QObject>
 #include <QDialog>
-#include <QTimer>
+#include <QObject>
 #include <QQuickWidget>
+#include <QTimer>
 
 class LoadingManager : public QObject {
     Q_OBJECT

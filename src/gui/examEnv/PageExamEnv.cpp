@@ -1,12 +1,12 @@
+#include "EnvSelectDialog.h"
+#include "PageExamEnv.h"
+#include <QBuffer>
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QBuffer>
-#include <QQuickWidget>
-#include <QQuickItem>
 #include <QQmlContext>
-#include "PageExamEnv.h"
-#include "EnvSelectDialog.h"
+#include <QQuickItem>
+#include <QQuickWidget>
 
 PageExamEnv::PageExamEnv(QWidget* parent) : QWidget(parent)
 {

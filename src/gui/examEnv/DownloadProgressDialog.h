@@ -1,12 +1,11 @@
-#pragma one
+#pragma once
 
 #include <QDialog>
-#include <QProgressBar>
 #include <QLabel>
+#include <QProgressBar>
 #include <QVBoxLayout>
 
-class DownloadProgressDialog : public QDialog
-{
+class DownloadProgressDialog : public QDialog {
     Q_OBJECT
 public:
     enum State {
@@ -14,9 +13,7 @@ public:
         StateImporting
     };
 
-    DownloadProgressDialog(QWidget* parent = nullptr);
-    ~DownloadProgressDialog();
-
+    explicit DownloadProgressDialog(QWidget* parent = nullptr);
     void updateDownloadProgress(qint64 bytesRead, qint64 totalBytes);
     void startImport(const QString& vmName);
     void updateImportProgress(int percent);
@@ -24,7 +21,10 @@ public:
     void finishImport(bool success);
 
 private:
+    void handleFailure(const QString& errorMessage);
+
     QProgressBar* progressBar;
     QLabel* statusLabel;
     State currentState;
+    QStyle* originalStyle;
 };

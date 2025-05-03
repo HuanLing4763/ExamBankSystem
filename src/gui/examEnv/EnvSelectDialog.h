@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QDialog>
 #include "env/ExamEnvManager.h"
 #include "ui_EnvSelectDialog.h"
+#include <QDialog>
 
 class EnvSelectDialog : public QDialog
 {

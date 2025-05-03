@@ -1,14 +1,15 @@
-#include <QCoreApplication>
-#include <QIcon>
-#include <QDir>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonObject>
+#include "ExamEnvManager.h"
+#include "network/NetworkManager.h"
 #include <algorithm>
-#include <QNetworkRequest>
+#include <QCoreApplication>
+#include <QDir>
+#include <QIcon>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include "ExamEnvManager.h"
+#include <QNetworkRequest>
 
 ExamEnvManager& ExamEnvManager::getInstance()
 {
@@ -56,13 +57,13 @@ QList<ExamEnvManager::EnvInfo> ExamEnvManager::envList()
         }
 
         QSettings settings("config.ini", QSettings::IniFormat, this);
-        QString host = settings.value("Server/Host", "localhost").toString();
-        int port = settings.value("Server/Port", 5000).toInt();
+        QString host = settings.value("Server/Host").toString();
+        int port = settings.value("Server/Port").toInt();
 
         QUrl url = QUrl(QString("http://%1:%2/subjects").arg(host).arg(port));
         QNetworkRequest request(url);
 
-        QNetworkAccessManager manager;
+        QNetworkAccessManager& manager = NetworkManager::instance();
         QNetworkReply* reply = manager.get(request);
 
         QEventLoop loop;
@@ -155,7 +156,7 @@ QList<QPair<QString, QIcon>> ExamEnvManager::getQuestionTypes()
         QUrl url(QString("http://%1:%2/questions/types?exam_type=%3").arg(host).arg(port).arg(encodedExamType));
         QNetworkRequest request(url);
 
-        QNetworkAccessManager manager;
+        QNetworkAccessManager& manager = NetworkManager::instance();
         QNetworkReply* reply = manager.get(request);
 
         QEventLoop loop;

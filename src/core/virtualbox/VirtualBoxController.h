@@ -1,11 +1,11 @@
 #pragma once
 #include <atlbase.h>
-#include <comdef.h>
-#include <VirtualBox.h>
-#include <QString>
-#include <QObject>
 #include <atomic>
+#include <comdef.h>
 #include <mutex>
+#include <QObject>
+#include <QString>
+#include <VirtualBox.h>
 
 class VirtualBoxController : public QObject {
     Q_OBJECT
@@ -24,13 +24,13 @@ public:
     void uninitializeCOM();
 
     // 虚拟机操作
-    HRESULT createVM(const QString& ovaFilePath);
+    void createVM(const QString& ovaFilePath);
     bool startVM(const QString& vmName, const QString& launchType = "gui");
     bool setResolution(quint32 screenId, quint32 width, quint32 height);
     bool installGuestAdditions();
     bool isVMExists(const QString& vmName);
 
-    bool downloadVMImage(const QString& imageName);
+    void downloadVMImage(const QString& imageName);
     void handleDownloadProgress(qint64 bytesRead, qint64 totalBytes);
 
 public slots:
@@ -56,7 +56,7 @@ signals:
     void vmStarted();
     void vmStartFailed(const QString& error);
     void downloadProgress(qint64 bytesRead, qint64 totalBytes);
-    void downloadFinished(bool success);
+    void downloadFinished(bool success, const QString& fileName);
     void vmImportProgress(int progressPercent);
     void importFinished(bool success);
 };

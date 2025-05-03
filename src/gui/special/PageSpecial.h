@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QWidget>
 #include "ui_PageSpecial.h"
+#include <QWidget>
 
 /**
  * @brief 专项练习页面，展示题目类型选择入口

@@ -1,9 +1,10 @@
+#include "network/NetworkManager.h"
 #include "VirtualBoxController.h"
-#include <QDebug>
-#include <QtConcurrent/QtConcurrent>
 #include <atlsafe.h>
-#include <QNetworkReply>
+#include <QDebug>
 #include <QNetworkDiskCache>
+#include <QNetworkReply>
+#include <QtConcurrent/QtConcurrent>
 
 const QString VIRTUALBOX_IMAGES_DIR = "E:/Project/CPP/ExamBankSystem/images/";
 
@@ -90,68 +91,68 @@ void VirtualBoxController::uninitializeCOM()
     }
 }
 
-HRESULT VirtualBoxController::createVM(const QString& ovaFilePath)
-{
+void VirtualBoxController::createVM(const QString& ovaFilePath) {
     QString error;
     if (!initializeCOM(error)) {
         emit importFinished(false);
-        return E_FAIL;
+        return;
     }
 
     CComPtr<IAppliance> appliance;
     HRESULT hr = m_pVirtualBox->CreateAppliance(&appliance);
     if (FAILED(hr)) {
         emit importFinished(false);
-        return hr;
+        return;
     }
 
     CComBSTR bstrFilePath(ovaFilePath.toStdWString().c_str());
     CComPtr<IProgress> readProgress;
     hr = appliance->Read(bstrFilePath, &readProgress);
     if (FAILED(hr)) {
+        qDebug() << "读取 OVA 文件失败: " << getCOMError(hr);
         emit importFinished(false);
-        return hr;
+        return;
     }
 
-    // 等待读取完成
+    // 实时获取读取进度（0%~30%）
     BOOL fReadCompleted = FALSE;
     while (!fReadCompleted) {
         hr = readProgress->get_Completed(&fReadCompleted);
         if (FAILED(hr)) {
             emit importFinished(false);
-            return hr;
+            return;
         }
+        // 获取当前阶段进度百分比（假设总进度30%）
+        ULONG percent;
+        readProgress->get_Percent(&percent);
+        emit vmImportProgress(percent * 30 / 100); // 映射到0%~30%
         Sleep(100);
     }
+    emit vmImportProgress(30); // 阶段1完成
 
+    // 解析配置（30%~50%）
     hr = appliance->Interpret();
     if (FAILED(hr)) {
+        qDebug() << "解析 OVA 文件失败: " << getCOMError(hr);
         emit importFinished(false);
-        return hr;
+        return;
     }
+    emit vmImportProgress(50); // 阶段2完成
 
-    if (hr == VBOX_E_NOT_SUPPORTED) {
-        qDebug() << "当前版本暂不支持 OVA 格式（TAR 打包），请使用解压后的 OVF 文件";
-        emit importFinished(false);
-        return hr;
-    }
-
-    // 创建空的 SAFEARRAY 作为 ImportMachines 的 aOptions 参数
+    // 导入虚拟机（50%~100%）
     SAFEARRAY* aOptions = SafeArrayCreateVector(VT_VARIANT, 0, 0);
     if (!aOptions) {
-        qDebug() << "创建 SAFEARRAY 失败";
         emit importFinished(false);
-        return E_OUTOFMEMORY;
+        return;
     }
 
     CComPtr<IProgress> importProgress;
     hr = appliance->ImportMachines(aOptions, &importProgress);
-    // 释放 SAFEARRAY
-    SafeArrayDestroy(aOptions);
+    SafeArrayDestroy(aOptions); // 确保无论成功与否都释放
 
     if (FAILED(hr)) {
         emit importFinished(false);
-        return hr;
+        return;
     }
 
     BOOL fImportCompleted = FALSE;
@@ -159,17 +160,21 @@ HRESULT VirtualBoxController::createVM(const QString& ovaFilePath)
         hr = importProgress->get_Completed(&fImportCompleted);
         if (FAILED(hr)) {
             emit importFinished(false);
-            return hr;
+            return;
         }
-        if (fImportCompleted) {
-            emit vmImportProgress(100);
-            emit importFinished(true);
-        }
+        // 获取当前阶段进度百分比（映射到50%~100%）
+        ULONG percent;
+        importProgress->get_Percent(&percent);
+        emit vmImportProgress(50 + percent * 50 / 100);
         Sleep(100);
     }
 
-    return hr;
+    emit vmImportProgress(100);
+    emit importFinished(true);
+
+    uninitializeCOM();
 }
+
 
 bool VirtualBoxController::startVM(const QString& vmName, const QString& launchType)
 {
@@ -247,22 +252,15 @@ void VirtualBoxController::startVMAsync(const QString& vmName, const QString& la
 {
     QtConcurrent::run([this, vmName, launchType]() {
         QString error;
-
-        HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-        if (FAILED(hr)) {
-            emit vmStartFailed("子线程 COM 初始化失败");
-            return;
-        }
-
         if (!initializeCOM(error)) {
             emit vmStartFailed("COM 对象初始化失败: " + error);
-            CoUninitialize();
+            uninitializeCOM();
             return;
         }
 
         startVM(vmName, launchType);
 
-        CoUninitialize();
+        uninitializeCOM();
         });
 }
 
@@ -370,7 +368,97 @@ bool VirtualBoxController::isVMExists(const QString& vmName)
     }
 }
 
-bool VirtualBoxController::downloadVMImage(const QString& imageName)
+void VirtualBoxController::downloadVMImage(const QString& imageName)
 {
-//TODO;实现虚拟机镜像下载
+    QSettings settings("config.ini", QSettings::IniFormat, this);
+    QString host = settings.value("Server/Host").toString();
+    int port = settings.value("Server/Port").toInt();
+
+    QUrl url = QUrl(QString("http://%1:%2/vm-images/download/%3").arg(host).arg(port).arg(imageName));
+    QNetworkRequest request(url);
+
+    QNetworkAccessManager& manager = NetworkManager::instance();
+    QNetworkReply* reply = manager.get(request);
+    reply->setParent(this);
+
+    // 在reply对象上存储状态
+    QSharedPointer<QFile> file(new QFile);
+    reply->setProperty("downloadFile", QVariant::fromValue(file));
+    reply->setProperty("imageName", imageName);
+
+    connect(reply, &QNetworkReply::readyRead, this, [this, reply]() {
+        auto file = reply->property("downloadFile").value<QSharedPointer<QFile>>();
+        QString imageName = reply->property("imageName").toString();
+
+        if (!file->isOpen()) {  // 首次触发时初始化
+            // 从响应头提取文件名
+            QVariant headerValue = reply->header(QNetworkRequest::ContentDispositionHeader);
+            QString downloadedFileName;
+            if (!headerValue.isNull()) {
+                QString contentDisposition = headerValue.toString();
+                int filenameStart = contentDisposition.indexOf("filename=");
+                if (filenameStart != -1) {
+                    QString filenamePart = contentDisposition.mid(filenameStart + 9).trimmed();
+                    downloadedFileName = filenamePart.startsWith('"')
+                        ? filenamePart.mid(1, filenamePart.size() - 2)
+                        : filenamePart;
+                }
+            }
+            // 未找到文件名则使用默认名称
+            if (downloadedFileName.isEmpty()) {
+                downloadedFileName = imageName + ".ova";
+            }
+            QString filePath = VIRTUALBOX_IMAGES_DIR + downloadedFileName;
+            file->setFileName(filePath);
+
+            // 打开文件失败处理
+            if (!file->open(QIODevice::WriteOnly)) {
+                qDebug() << "文件打开失败，路径：" << filePath << "错误：" << file->errorString();
+                reply->abort();
+                return;
+            }
+            reply->setProperty("downloadedFileName", downloadedFileName);  // 保存文件名到reply属性
+        }
+
+        // 写入数据
+        if (file->isOpen()) {
+            QByteArray data = reply->readAll();
+            if (!data.isEmpty() && file->write(data) == -1) {
+                qDebug() << "文件写入失败，错误：" << file->errorString();
+                reply->abort();
+            }
+        }
+        });
+
+    // 下载完成后清理资源
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        auto file = reply->property("downloadFile").value<QSharedPointer<QFile>>();
+        QString downloadedFileName = reply->property("downloadedFileName").toString();
+        bool success = false;
+
+        if (reply->error() == QNetworkReply::NoError) {
+            if (file->isOpen()) {
+                // 写入剩余数据
+                QByteArray remainingData = reply->readAll();
+                if (!remainingData.isEmpty()) {
+                    file->write(remainingData);
+                }
+                file->close();
+                success = true;
+            }
+        }
+        else {
+            qDebug() << "下载失败: " << reply->errorString();
+            if (file->isOpen()) {
+                file->close();
+                QFile::remove(file->fileName());  // 删除不完整文件
+            }
+        }
+
+        emit downloadFinished(success, downloadedFileName);
+        reply->deleteLater();
+        });
+
+    // 连接下载进度信号
+    connect(reply, &QNetworkReply::downloadProgress, this, &VirtualBoxController::downloadProgress);
 }

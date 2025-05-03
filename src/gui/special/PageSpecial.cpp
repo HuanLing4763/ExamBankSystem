@@ -1,12 +1,12 @@
-#include <QToolButton>
-#include <QLabel>
+#include "env/ExamEnvManager.h"
+#include "PageSpecial.h"
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
+#include <QLabel>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include "PageSpecial.h"
-#include "env/ExamEnvManager.h"
+#include <QToolButton>
 
 PageSpecial::PageSpecial(QWidget* parent) : QWidget(parent)
 {
