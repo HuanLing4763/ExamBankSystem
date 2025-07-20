@@ -60,7 +60,7 @@ QList<ExamEnvManager::EnvInfo> ExamEnvManager::envList()
         QString host = settings.value("Server/Host").toString();
         int port = settings.value("Server/Port").toInt();
 
-        QUrl url = QUrl(QString("http://%1:%2/subjects").arg(host).arg(port));
+        QUrl url = QUrl(QString("http://%1:%2/subjects/").arg(host).arg(port));
         QNetworkRequest request(url);
 
         QNetworkAccessManager& manager = NetworkManager::instance();

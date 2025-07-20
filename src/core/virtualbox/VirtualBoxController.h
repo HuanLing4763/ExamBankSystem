@@ -30,9 +30,6 @@ public:
     bool installGuestAdditions();
     bool isVMExists(const QString& vmName);
 
-    void downloadVMImage(const QString& imageName);
-    void handleDownloadProgress(qint64 bytesRead, qint64 totalBytes);
-
 public slots:
     void startVMAsync(const QString& vmName, const QString& launchType = "gui");
 
@@ -55,8 +52,6 @@ private:
 signals:
     void vmStarted();
     void vmStartFailed(const QString& error);
-    void downloadProgress(qint64 bytesRead, qint64 totalBytes);
-    void downloadFinished(bool success, const QString& fileName);
     void vmImportProgress(int progressPercent);
     void importFinished(bool success);
 };

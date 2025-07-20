@@ -6,6 +6,8 @@
 #include <QNetworkReply>
 #include <QtConcurrent/QtConcurrent>
 
+Q_DECLARE_METATYPE(QList<QFuture<void>>)
+
 const QString VIRTUALBOX_IMAGES_DIR = "E:/Project/CPP/ExamBankSystem/images/";
 
 VirtualBoxController* VirtualBoxController::instance = nullptr;
@@ -366,99 +368,4 @@ bool VirtualBoxController::isVMExists(const QString& vmName)
         qDebug() << "查找虚拟机时发生错误: " << getCOMError(hr);
         return false;
     }
-}
-
-void VirtualBoxController::downloadVMImage(const QString& imageName)
-{
-    QSettings settings("config.ini", QSettings::IniFormat, this);
-    QString host = settings.value("Server/Host").toString();
-    int port = settings.value("Server/Port").toInt();
-
-    QUrl url = QUrl(QString("http://%1:%2/vm-images/download/%3").arg(host).arg(port).arg(imageName));
-    QNetworkRequest request(url);
-
-    QNetworkAccessManager& manager = NetworkManager::instance();
-    QNetworkReply* reply = manager.get(request);
-    reply->setParent(this);
-
-    // 在reply对象上存储状态
-    QSharedPointer<QFile> file(new QFile);
-    reply->setProperty("downloadFile", QVariant::fromValue(file));
-    reply->setProperty("imageName", imageName);
-
-    connect(reply, &QNetworkReply::readyRead, this, [this, reply]() {
-        auto file = reply->property("downloadFile").value<QSharedPointer<QFile>>();
-        QString imageName = reply->property("imageName").toString();
-
-        if (!file->isOpen()) {  // 首次触发时初始化
-            // 从响应头提取文件名
-            QVariant headerValue = reply->header(QNetworkRequest::ContentDispositionHeader);
-            QString downloadedFileName;
-            if (!headerValue.isNull()) {
-                QString contentDisposition = headerValue.toString();
-                int filenameStart = contentDisposition.indexOf("filename=");
-                if (filenameStart != -1) {
-                    QString filenamePart = contentDisposition.mid(filenameStart + 9).trimmed();
-                    downloadedFileName = filenamePart.startsWith('"')
-                        ? filenamePart.mid(1, filenamePart.size() - 2)
-                        : filenamePart;
-                }
-            }
-            // 未找到文件名则使用默认名称
-            if (downloadedFileName.isEmpty()) {
-                downloadedFileName = imageName + ".ova";
-            }
-            QString filePath = VIRTUALBOX_IMAGES_DIR + downloadedFileName;
-            file->setFileName(filePath);
-
-            // 打开文件失败处理
-            if (!file->open(QIODevice::WriteOnly)) {
-                qDebug() << "文件打开失败，路径：" << filePath << "错误：" << file->errorString();
-                reply->abort();
-                return;
-            }
-            reply->setProperty("downloadedFileName", downloadedFileName);  // 保存文件名到reply属性
-        }
-
-        // 写入数据
-        if (file->isOpen()) {
-            QByteArray data = reply->readAll();
-            if (!data.isEmpty() && file->write(data) == -1) {
-                qDebug() << "文件写入失败，错误：" << file->errorString();
-                reply->abort();
-            }
-        }
-        });
-
-    // 下载完成后清理资源
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
-        auto file = reply->property("downloadFile").value<QSharedPointer<QFile>>();
-        QString downloadedFileName = reply->property("downloadedFileName").toString();
-        bool success = false;
-
-        if (reply->error() == QNetworkReply::NoError) {
-            if (file->isOpen()) {
-                // 写入剩余数据
-                QByteArray remainingData = reply->readAll();
-                if (!remainingData.isEmpty()) {
-                    file->write(remainingData);
-                }
-                file->close();
-                success = true;
-            }
-        }
-        else {
-            qDebug() << "下载失败: " << reply->errorString();
-            if (file->isOpen()) {
-                file->close();
-                QFile::remove(file->fileName());  // 删除不完整文件
-            }
-        }
-
-        emit downloadFinished(success, downloadedFileName);
-        reply->deleteLater();
-        });
-
-    // 连接下载进度信号
-    connect(reply, &QNetworkReply::downloadProgress, this, &VirtualBoxController::downloadProgress);
 }
